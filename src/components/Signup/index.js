@@ -46,27 +46,12 @@ const Signup = ({ user, setUser }) => {
     resolver: yupResolver(formSchema),
   });
 
-  const onSubmitFunction = ({
-    email,
-    password,
-    name,
-    bio,
-    contact,
-    course_module,
-  }) => {
-    const user = {
-      email,
-      password,
-      name,
-      bio,
-      contact,
-      course_module,
-    };
+  const onSubmitFunction = (data) => {
     api
-      .post("/users", user)
+      .post("/users", data)
       .then((response) => console.log(response.data))
       .catch((err) => console.log(err));
-    console.log(user);
+    console.log(data);
     history.push("/login");
   };
 
