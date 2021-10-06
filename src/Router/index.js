@@ -1,24 +1,44 @@
 import { Switch, Route } from "react-router-dom";
-import React from "react";
+import React, { useEffect } from "react";
+import { useState } from "react";
 import Signup from "../components/Signup";
 import Login from "../components/Login";
 import Dashboard from "../components/Dashboard";
-import Menu from "../components/Menu";
 
 function Router() {
+  const [authenticated, setAuthenticated] = useState(false);
+
+  useEffect(() => {
+    const token = JSON.parse(localStorage.getItem("@KHub:token"));
+
+    console.log(token);
+
+    if (token) {
+      setAuthenticated(true);
+    }
+  }, [authenticated]);
+
+  console.log(authenticated);
+
   return (
     <Switch>
       <Route exact path="/">
-        <Signup />
+        <Signup
+          authenticated={authenticated}
+          setAuthenticated={setAuthenticated}
+        />
       </Route>
       <Route exact path="/login">
-        <Login />
+        <Login
+          authenticated={authenticated}
+          setAuthenticated={setAuthenticated}
+        />
       </Route>
       <Route exact path="/dashboard">
-        <Dashboard />
-      </Route>
-      <Route exact path="/menu">
-        <Menu />
+        <Dashboard
+          authenticated={authenticated}
+          setAuthenticated={setAuthenticated}
+        />
       </Route>
     </Switch>
   );

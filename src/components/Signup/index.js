@@ -1,11 +1,13 @@
 import React from "react";
 import { makeStyles } from "@material-ui/core";
 import { Grid, Paper, TextField, FormControl, Button } from "@material-ui/core";
-import { useHistory } from "react-router";
+import { useHistory, Redirect } from "react-router";
+import { Link } from "react-router-dom";
 import { useForm } from "react-hook-form";
 import { yupResolver } from "@hookform/resolvers/yup";
 import * as yup from "yup";
 import api from "../../services/api";
+import { toast } from "react-toastify";
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -20,22 +22,25 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-const Signup = ({ user, setUser }) => {
+const Signup = ({ authenticated, setAuthenticated }) => {
   const classes = useStyles();
 
   const history = useHistory();
 
   const formSchema = yup.object().shape({
-    name: yup.string().required("Name required"),
-    email: yup.string().required("Email required").email("Invalid email"),
-    password: yup.string().required("Password required"),
+    name: yup.string().required("Tell us your name"),
+    email: yup.string().required("We need your e-mail").email("Invalid email"),
+    password: yup
+      .string()
+      .required("Password required")
+      .min(5, "Password must contain 6 or more characters"),
     confirmation: yup
       .string()
       .required("Confirmation of password required")
       .oneOf([yup.ref("password"), null], "Passwords must match"),
-    bio: yup.string().required("Password required"),
-    contact: yup.string().required("Password required"),
-    course_module: yup.string().required("Password required"),
+    bio: yup.string().required("Say something about you"),
+    contact: yup.string("Some way of contacting you"),
+    course_module: yup.string("Wich module are you?"),
   });
 
   const {
@@ -49,11 +54,16 @@ const Signup = ({ user, setUser }) => {
   const onSubmitFunction = (data) => {
     api
       .post("/users", data)
-      .then((response) => console.log(response.data))
-      .catch((err) => console.log(err));
-    console.log(data);
-    history.push("/login");
+      .then((_) => {
+        toast.success("Account successfully created!");
+        return history.push("/login");
+      })
+      .catch((err) => toast.error("Email already in use!"));
   };
+
+  if (authenticated) {
+    return <Redirect to="/dashboard" />;
+  }
 
   return (
     <div className={classes.root}>
@@ -86,30 +96,21 @@ const Signup = ({ user, setUser }) => {
                   error={errors.confirmation?.message}
                   helperText={errors.confirmation?.message}
                   type="password"
-                  label="Password confirmation"
+                  label="Confirm your password"
                   {...register("confirmation")}
                 ></TextField>
+                <TextField label="About you" {...register("bio")}></TextField>
+                <TextField label="Contact" {...register("contact")}></TextField>
                 <TextField
-                  error={errors.confirmation?.message}
-                  helperText={errors.confirmation?.message}
-                  label="Bio"
-                  {...register("bio")}
-                ></TextField>
-                <TextField
-                  error={errors.confirmation?.message}
-                  helperText={errors.confirmation?.message}
-                  label="Contact"
-                  {...register("contact")}
-                ></TextField>
-                <TextField
-                  error={errors.confirmation?.message}
-                  helperText={errors.confirmation?.message}
                   label="Course Module"
                   {...register("course_module")}
                 ></TextField>
                 <Button color="primary" variant="contained" type="submit">
                   Submit
                 </Button>
+                <Paper>
+                  Already have an account? <Link to="/login">Log in</Link>
+                </Paper>
               </FormControl>
             </form>
           </Paper>

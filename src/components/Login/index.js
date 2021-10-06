@@ -1,11 +1,13 @@
 import React from "react";
 import { makeStyles } from "@material-ui/core";
 import { Grid, Paper, TextField, FormControl, Button } from "@material-ui/core";
-import { useHistory } from "react-router";
+import { useHistory, Redirect } from "react-router";
+import { Link } from "react-router-dom";
 import { useForm } from "react-hook-form";
 import { yupResolver } from "@hookform/resolvers/yup";
 import * as yup from "yup";
 import api from "../../services/api";
+import { toast } from "react-toastify";
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -20,7 +22,7 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-const Signup = ({ user, setUser }) => {
+const Login = ({ authenticated, setAuthenticated }) => {
   const classes = useStyles();
 
   const history = useHistory();
@@ -38,11 +40,37 @@ const Signup = ({ user, setUser }) => {
     resolver: yupResolver(formSchema),
   });
 
-  const onSubmitFunction = ({ email, password }) => {
-    const user = { email, password };
-    api.post("/users", user);
-    history.push("/login");
+  const onSubmitFunction = (data) => {
+    api
+      .post("/sessions", data)
+      .then((response) => {
+        const { token } = response.data;
+
+        const userId = response.data.user.id;
+
+        const userName = response.data.user.name;
+
+        localStorage.setItem("@KHub:token", JSON.stringify(token));
+
+        localStorage.setItem("@KHub:userId", userId);
+
+        localStorage.setItem("@KHub:userName", userName);
+
+        toast.success("Logged in successfully!");
+
+        setAuthenticated(true);
+
+        return history.push("/dashboard");
+      })
+      .catch((err) => {
+        console.log(err);
+        toast.error("Invalid email or password");
+      });
   };
+
+  if (authenticated) {
+    return <Redirect to="/dashboard" />;
+  }
 
   return (
     <div className={classes.root}>
@@ -68,6 +96,9 @@ const Signup = ({ user, setUser }) => {
                 <Button color="primary" variant="contained" type="submit">
                   Enter
                 </Button>
+                <Paper>
+                  Don't have an account? <Link to="/">Create one</Link>
+                </Paper>
               </FormControl>
             </form>
           </Paper>
@@ -77,4 +108,4 @@ const Signup = ({ user, setUser }) => {
   );
 };
 
-export default Signup;
+export default Login;
