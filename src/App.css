@@ -1,18 +1,22 @@
 .App {
   text-align: center;
+  height: 100vh;
+}
+body {
+  height: 100vh;
 }
 
 .dashboard {
   height: 100vh;
   display: flex;
   flex-direction: column;
-  justify-content: center;
   align-items: center;
 }
 
 .logOut {
-  bottom: 13vh;
+  position: absolute;
   align-self: flex-end;
+  justify-self: flex-end;
 }
 
 .dashboard h2 {
