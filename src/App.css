@@ -28,6 +28,7 @@ body {
 
 .cards {
   display: flex;
+  height: 300px;
 }
 
 .card {

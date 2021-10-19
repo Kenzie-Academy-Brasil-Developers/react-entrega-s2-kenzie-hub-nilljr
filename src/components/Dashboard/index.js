@@ -47,9 +47,10 @@ const Dashboard = ({ authenticated, setAuthenticated }) => {
           Authorization: `Bearer ${token}`,
         },
       })
-      .then((response) =>
-        localStorage.setItem(`${response.data.title}:id`, response.data.id)
-      )
+      .then((response) => {
+        localStorage.setItem(`${response.data.title}:id`, response.data.id);
+        loadTechs();
+      })
       .catch((err) => {
         toast.error("Tech already exists!");
         console.log(err);
@@ -111,12 +112,7 @@ const Dashboard = ({ authenticated, setAuthenticated }) => {
             {...register("status")}
             label="Your level"
           ></TextField>
-          <Button
-            onClick={() => loadTechs}
-            color="primary"
-            variant="contained"
-            type="submit"
-          >
+          <Button color="primary" variant="contained" type="submit">
             Add Tech
           </Button>
         </FormControl>
