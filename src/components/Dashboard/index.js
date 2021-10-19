@@ -1,4 +1,4 @@
-import { Redirect, useHistory } from "react-router";
+import { Redirect } from "react-router";
 import { Button, TextField, FormControl } from "@material-ui/core";
 import { useState } from "react";
 import { useForm } from "react-hook-form";
@@ -19,7 +19,7 @@ const Dashboard = ({ authenticated, setAuthenticated }) => {
     JSON.parse(localStorage.getItem("@KHub:token")) || ""
   );
 
-  function loadTechs() {
+  const loadTechs = () => {
     api
       .get(`/users/${userId}`)
       .then((response) => {
@@ -29,7 +29,11 @@ const Dashboard = ({ authenticated, setAuthenticated }) => {
       .catch((err) => {
         console.log(err);
       });
-  }
+  };
+
+  const deleteTech = (id) => {
+    api.delete(`/users/techs/${id}`).then(loadTechs);
+  };
 
   function onSubmit(data) {
     api
@@ -38,7 +42,9 @@ const Dashboard = ({ authenticated, setAuthenticated }) => {
           Authorization: `Bearer ${token}`,
         },
       })
-      .then(toast.success("Tech added!"))
+      .then((response) =>
+        localStorage.setItem(`${response.data.title}:id`, response.data.id)
+      )
       .catch((err) => {
         toast.error("Tech already exists!");
         console.log(err);
@@ -63,8 +69,9 @@ const Dashboard = ({ authenticated, setAuthenticated }) => {
   }
 
   return (
-    <div>
+    <div className="dashboard">
       <Button
+        className="logOut"
         color="primary"
         variant="contained"
         onClick={() => {
@@ -75,13 +82,15 @@ const Dashboard = ({ authenticated, setAuthenticated }) => {
         Log Out
       </Button>
       <h2>Welcome, {userName} </h2>
-      <Button onClick={() => loadTechs} color="primary" variant="contained">
-        Show Techs
-      </Button>
 
-      {techs.map((e) => (
-        <Card tech={e} />
-      ))}
+      <Button onClick={loadTechs} variant="contained" color="primary">
+        Show techs
+      </Button>
+      <div className="cards">
+        {techs.map((e) => (
+          <Card tech={e} deleteTech={deleteTech} />
+        ))}
+      </div>
 
       <form onSubmit={handleSubmit(onSubmit)}>
         <FormControl>
@@ -97,7 +106,12 @@ const Dashboard = ({ authenticated, setAuthenticated }) => {
             {...register("status")}
             label="Your level"
           ></TextField>
-          <Button color="primary" variant="contained" type="submit">
+          <Button
+            onClick={() => loadTechs}
+            color="primary"
+            variant="contained"
+            type="submit"
+          >
             Add Tech
           </Button>
         </FormControl>

@@ -1,11 +1,11 @@
-import { useHistory } from "react-router-dom";
+import { Button } from "@material-ui/core";
 
-export default function Card({ tech }) {
-  const history = useHistory();
-
+export default function Card({ tech, deleteTech }) {
   return (
-    <div>
-      <span> {tech} </span>
+    <div className="card">
+      <span> Título: {tech.title} </span>
+      <span> Status: {tech.status} </span>
+      <Button onClick={() => deleteTech(tech.id)}>Deletar</Button>
     </div>
   );
 }
