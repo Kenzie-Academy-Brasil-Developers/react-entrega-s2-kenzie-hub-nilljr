@@ -19,6 +19,8 @@ const useStyles = makeStyles((theme) => ({
     padding: theme.spacing(2),
     textAlign: "center",
     color: theme.palette.text.secondary,
+    backgroundColor: "lightgray",
+    textDecoration: "none",
   },
 }));
 
@@ -96,9 +98,9 @@ const Login = ({ authenticated, setAuthenticated }) => {
                 <Button color="primary" variant="contained" type="submit">
                   Enter
                 </Button>
-                <Paper>
+                <span>
                   Don't have an account? <Link to="/">Create one</Link>
-                </Paper>
+                </span>
               </FormControl>
             </form>
           </Paper>

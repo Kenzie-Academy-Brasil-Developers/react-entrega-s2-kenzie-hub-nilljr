@@ -78,7 +78,7 @@ const Dashboard = ({ authenticated, setAuthenticated }) => {
     <div className="dashboard">
       <Button
         className="logOut"
-        color="primary"
+        color="terciary"
         variant="contained"
         onClick={() => {
           setAuthenticated(false);
@@ -89,7 +89,12 @@ const Dashboard = ({ authenticated, setAuthenticated }) => {
       </Button>
       <h2>Welcome, {userName} </h2>
 
-      <Button onClick={loadTechs} variant="contained" color="primary">
+      <Button
+        id="showButton"
+        onClick={loadTechs}
+        variant="contained"
+        color="primary"
+      >
         Show techs
       </Button>
       <div className="cards">

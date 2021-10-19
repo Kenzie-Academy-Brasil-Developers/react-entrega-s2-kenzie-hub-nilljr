@@ -19,6 +19,7 @@ const useStyles = makeStyles((theme) => ({
     padding: theme.spacing(2),
     textAlign: "center",
     color: theme.palette.text.secondary,
+    backgroundColor: "lightgray",
   },
 }));
 
@@ -66,7 +67,7 @@ const Signup = ({ authenticated, setAuthenticated }) => {
   }
 
   return (
-    <div className={classes.root}>
+    <div id="signup" className={classes.root}>
       <Grid container spacing={3} justifyContent="center">
         <Grid item xs={6} className={classes.item}>
           <Paper className={classes.paper}>
@@ -108,9 +109,9 @@ const Signup = ({ authenticated, setAuthenticated }) => {
                 <Button color="primary" variant="contained" type="submit">
                   Submit
                 </Button>
-                <Paper>
+                <span>
                   Already have an account? <Link to="/login">Log in</Link>
-                </Paper>
+                </span>
               </FormControl>
             </form>
           </Paper>
