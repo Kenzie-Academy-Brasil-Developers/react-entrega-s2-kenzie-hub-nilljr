@@ -32,7 +32,12 @@ const Dashboard = ({ authenticated, setAuthenticated }) => {
   };
 
   const deleteTech = (id) => {
-    api.delete(`/users/techs/${id}`).then(loadTechs);
+    console.log(id);
+    api
+      .delete(`/users/techs/${id}`, {
+        headers: { Authorization: `Bearer ${token}` },
+      })
+      .then(loadTechs);
   };
 
   function onSubmit(data) {
